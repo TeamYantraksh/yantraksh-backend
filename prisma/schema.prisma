@@ -1,0 +1,160 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ---------------------- ENUMS ----------------------
+
+enum UserType {
+  AUS_STUDENT
+  NON_AUS
+}
+
+enum CompetitionType {
+  SOLO
+  TEAM
+}
+
+enum TicketCategory {
+  GOLD
+  SILVER
+  BRONZE
+  VIP
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+// ---------------------- USER MODEL ----------------------
+
+model User {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  email        String     @unique
+  password     String
+  userType     UserType
+  rollNumber   String?
+  department   String?
+  year         Int?
+
+  participations Participation[]
+  teamMemberships TeamMember[]
+  teamLeadership  Team[] @relation("TeamLeader")
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ---------------------- COMPETITION MODEL ----------------------
+
+model Competition {
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  type        CompetitionType
+  prize       Int
+
+  participations Participation[]
+  teams          Team[]
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ---------------------- PARTICIPATION MODEL ----------------------
+
+model Participation {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+
+  userId         String        @db.ObjectId
+  competitionId  String        @db.ObjectId
+  teamId         String?       @db.ObjectId
+
+  user           User          @relation(fields: [userId], references: [id])
+  competition    Competition   @relation(fields: [competitionId], references: [id])
+  team           Team?         @relation(fields: [teamId], references: [id])
+
+  createdAt      DateTime @default(now())
+}
+
+// ---------------------- TEAM MODEL ----------------------
+
+model Team {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+
+  competitionId   String      @db.ObjectId
+  leaderId        String      @db.ObjectId
+
+  competition     Competition @relation(fields: [competitionId], references: [id])
+  leader          User        @relation("TeamLeader", fields: [leaderId], references: [id])
+
+  members         TeamMember[]
+  participations  Participation[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ---------------------- TEAM MEMBER ----------------------
+
+model TeamMember {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+
+  teamId    String  @db.ObjectId
+  userId    String  @db.ObjectId
+
+  team      Team    @relation(fields: [teamId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+// ---------------------- TICKET MODEL ----------------------
+
+model Ticket {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  buyerName     String
+  buyerEmail    String
+  category      TicketCategory
+  eventName     String
+  price         Int
+  paymentStatus PaymentStatus @default(PENDING)
+
+  purchasedAt   DateTime @default(now())
+}
+
+// ---------------------- MERCH MODEL ----------------------
+
+model Merch {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  price       Int
+  stock       Int
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ---------------------- ACCOMMODATION MODEL ----------------------
+
+model Accommodation {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  guestName     String
+  guestEmail    String
+  phone         String
+  days          Int
+  roomType      String
+  checkInDate   DateTime
+  checkOutDate  DateTime
+  paymentStatus PaymentStatus @default(PENDING)
+
+  createdAt     DateTime @default(now())
+}
