@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; }
+        .header { background-color: #2196F3; color: white; padding: 15px; text-align: center; border-radius: 8px 8px 0 0; }
+        .content { padding: 20px; background-color: white; }
+        .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #888; }
+        .team-name { color: #2196F3; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>You've been added to a Team! 🎉</h2>
+        </div>
+        <div class="content">
+            <p>Hello <strong><%= memberName %></strong>,</p>
+            
+            <p>You have been successfully added to the team <span class="team-name"><%= teamName %></span>.</p>
+            
+            <p><strong>Your Team Details:</strong></p>
+            <ul>
+                <li><strong>Team Name:</strong> <%= teamName %></li>
+                <li><strong>Competition:</strong> Tech Fest 2026</li>
+            </ul>
+            
+            <p>Please contact your Team Leader for further strategy and planning.</p>
+            
+            <br>
+            <p>Best Regards,<br>Team Yantraksh</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 Tech Fest. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

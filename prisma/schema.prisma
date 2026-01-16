@@ -76,9 +76,9 @@ model Participation {
   competitionId  String        @db.ObjectId
   teamId         String?       @db.ObjectId
 
-  user           User          @relation(fields: [userId], references: [id])
-  competition    Competition   @relation(fields: [competitionId], references: [id])
-  team           Team?         @relation(fields: [teamId], references: [id])
+  user           User          @relation(fields: [userId], references: [id],onDelete: NoAction, onUpdate: NoAction)
+  competition    Competition   @relation(fields: [competitionId], references: [id],onDelete: NoAction, onUpdate: NoAction)
+  team           Team?         @relation(fields: [teamId], references: [id],onDelete: NoAction, onUpdate: NoAction)
 
   createdAt      DateTime @default(now())
 }
@@ -93,7 +93,7 @@ model Team {
   leaderId        String      @db.ObjectId
 
   competition     Competition @relation(fields: [competitionId], references: [id])
-  leader          User        @relation("TeamLeader", fields: [leaderId], references: [id])
+  leader          User        @relation("TeamLeader", fields: [leaderId], references: [id],onDelete: NoAction, onUpdate: NoAction)
 
   members         TeamMember[]
   participations  Participation[]
@@ -110,8 +110,8 @@ model TeamMember {
   teamId    String  @db.ObjectId
   userId    String  @db.ObjectId
 
-  team      Team    @relation(fields: [teamId], references: [id])
-  user      User    @relation(fields: [userId], references: [id])
+  team      Team    @relation(fields: [teamId], references: [id],onDelete: NoAction, onUpdate: NoAction)
+  user      User    @relation(fields: [userId], references: [id],onDelete: NoAction, onUpdate: NoAction)
 
   createdAt DateTime @default(now())
 }
