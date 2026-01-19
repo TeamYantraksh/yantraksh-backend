@@ -11,6 +11,7 @@ import teamRoutes from "./src/modules/team/team.route";
 import teamMemberRoutes from "./src/modules/teamMember/teamMember.route";
 import job from "./src/config/cron";
 import mailRoutes from './src/modules/mail/mail.routes';
+import adminRoutes from './src/modules/admin/admin.route';
 
 dotenv.config()
 
@@ -26,6 +27,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/auth", authRoutes)
 app.use("/merch", merchRoutes)
+app.use("/admin", adminRoutes)
 app.use('/api/mail', mailRoutes);
 app.use("/competitions", competitionRoutes)
 app.use("/participations", participationRoutes)

@@ -1,6 +1,6 @@
 export interface IAuthToken {
     id: string
-    userType:string
+    role: string
     iat: number
     exp: number
 }
