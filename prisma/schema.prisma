@@ -9,10 +9,12 @@ generator client {
 
 // ---------------------- ENUMS ----------------------
 
-enum UserType {
+enum UserRole {
+  ADMIN
   AUS_STUDENT
   NON_AUS
-  ADMIN
+  VOLUNTEER  
+  PARTICIPANT
 }
 
 enum CompetitionType {
@@ -33,6 +35,12 @@ enum PaymentStatus {
   CANCELLED
 }
 
+enum EventStatus {
+  UPCOMING
+  ONGOING
+  COMPLETED
+}
+
 // ---------------------- USER MODEL ----------------------
 
 model User {
@@ -40,14 +48,18 @@ model User {
   name         String
   email        String     @unique
   password     String
-  userType     UserType
+  role         UserRole  @default(PARTICIPANT)
   rollNumber   String?
   department   String?
   year         Int?
 
+  assignedCompetitionId String? @db.ObjectId
+  // assignedCompetition   Competition? @relation("AssignedCompetition", fields: [assignedCompetitionId], references: [id])
+
   participations Participation[]
   teamMemberships TeamMember[]
   teamLeadership  Team[] @relation("TeamLeader")
+  conductedCompetitions Competition[] @relation("ConductedBy")
 
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -58,8 +70,18 @@ model User {
 model Competition {
   id          String          @id @default(auto()) @map("_id") @db.ObjectId
   name        String
+  description   String?
   type        CompetitionType
   prize       Int
+
+  venue         String
+  eventDate     DateTime
+  maxParticipants Int
+  status        EventStatus
+
+  conductedById String @db.ObjectId
+  conductedBy   User   @relation("ConductedBy", fields: [conductedById], references: [id])
+  // assignedUsers User[] @relation("AssignedCompetition")
 
   participations Participation[]
   teams          Team[]
@@ -139,6 +161,8 @@ model Merch {
   description String?
   price       Int
   stock       Int
+  soldCount   Int      @default(0)
+  imageUrl    String?
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

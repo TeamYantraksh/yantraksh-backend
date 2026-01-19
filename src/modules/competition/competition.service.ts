@@ -5,12 +5,18 @@ type CompetitionCreateData = {
   name: string;
   type: "SOLO" | "TEAM";
   prize: number;
+  venue: string;
+  eventDate: Date;
+  maxParticipants: number;
+  status: "UPCOMING" | "ONGOING" | "COMPLETED";
+  description?: string;
+  conductedById: string;
 };
 
-type CompetitionUpdateData = Partial<CompetitionCreateData>;
+type CompetitionUpdateData = Partial<Omit<CompetitionCreateData, "conductedById">>;
 
 export class CompetitionService {
-  constructor(private CompetitionRepository: CompetitionRepository) {}
+  constructor(private CompetitionRepository: CompetitionRepository) { }
 
   async createCompetition(data: CompetitionCreateData) {
     return this.CompetitionRepository.create(data);

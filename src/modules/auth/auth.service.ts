@@ -10,7 +10,7 @@ export class AuthService {
     async register(body: any): Promise<string> {
         const data = body;
 
-        if (data.userType === "AUS_STUDENT" && !data.rollNumber) {
+        if (data.role === "AUS_STUDENT" && !data.rollNumber) {
             throw new AppError("Roll number required for AUS students", 422)
         }
 
@@ -20,7 +20,7 @@ export class AuthService {
         data.password = await bcrypt.hash(data.password, 10)
 
         const user = await this.repo.createUser(data);
-        return this.generateToken(user.id,user.userType);
+        return this.generateToken(user.id, user.role);
     }
 
     async login(body: any): Promise<string> {
@@ -30,7 +30,7 @@ export class AuthService {
         const ok = await bcrypt.compare(body.password, user.password)
         if (!ok) throw new AppError("Invalid email or password", 401)
 
-        return this.generateToken(user.id,user.userType)
+        return this.generateToken(user.id, user.role)
     }
 
     async me(id: string): Promise<IUserSafe | null> {
@@ -46,7 +46,7 @@ export class AuthService {
         };
     }
 
-    private generateToken(id: string,userType:string): string {
-        return jwt.sign({ id,userType }, process.env.JWT_SECRET!, { expiresIn: "7d" })
+    private generateToken(id: string, role: string): string {
+        return jwt.sign({ id, role }, process.env.JWT_SECRET!, { expiresIn: "7d" })
     }
 }
