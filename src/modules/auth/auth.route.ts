@@ -10,6 +10,7 @@ const controller = new AuthController();
 router.post("/register", validate(registerSchema), controller.register);
 router.post("/login", validate(loginSchema), controller.login);
 router.get("/me", requireUser, controller.me);
+router.get("/verify-email", controller.verifyEmail.bind(controller));
 router.get("/users", requireUser, requireAdmin, controller.getAllUsers.bind(controller));
 router.patch("/users/:id/role", requireUser, requireAdmin, controller.changeUserRole.bind(controller));
 

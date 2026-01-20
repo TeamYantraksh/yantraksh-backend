@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { AppError } from "../../core/AppError";
 import { AuthRepository } from "./auth.repository";
 import { IUserSafe } from "../../types/user";
+import { sendEmail } from "../mail/mail.service";
 
 export class AuthService {
     private repo = new AuthRepository();
@@ -20,6 +21,20 @@ export class AuthService {
         data.password = await bcrypt.hash(data.password, 10)
 
         const user = await this.repo.createUser(data);
+        const verifyToken = jwt.sign(
+            { userId: user.id },
+            process.env.JWT_SECRET!,
+            { expiresIn: "24h" }
+        );
+        await sendEmail(
+            user.email,
+            "Verify your email address",
+            "verify",
+            {
+                name: user.name,
+                verifyUrl: `${process.env.API_URL}/auth/verify-email?token=${verifyToken}`,
+            }
+        );
         return this.generateToken(user.id, user.userType);
     }
 
@@ -27,6 +42,10 @@ export class AuthService {
         const user = await this.repo.findByEmail(body.email)
         if (!user) throw new AppError("Invalid email or password", 401)
 
+        if (!user.isEmailVerified) {
+            throw new AppError("Please verify your email before logging in", 403);
+        }
+        
         const ok = await bcrypt.compare(body.password, user.password)
         if (!ok) throw new AppError("Invalid email or password", 401)
 

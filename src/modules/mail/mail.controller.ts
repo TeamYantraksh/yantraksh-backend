@@ -1,19 +1,19 @@
 import { Request, Response } from 'express';
-import prisma from '../../config/client'; 
+import prisma from '../../config/client';
 import { sendEmail } from './mail.service';
 import QRCode from 'qrcode';
 
 export const sendWelcomeEmail = async (req: Request, res: Response) => {
-    const { userId } = req.body;
+    const { id } = req.body;
     try {
-        const user = await prisma.user.findUnique({ where: { id: userId } });
+        const user = await prisma.user.findUnique({ where: { id } });
         if (!user) {
             res.status(404).json({ error: "User not found" });
             return;
         }
 
         await sendEmail(user.email, "Welcome to Tech Fest!", "welcome", { name: user.name });
-        
+
         res.status(200).json({ message: "Welcome email sent successfully" });
     } catch (error: any) {
         res.status(500).json({ error: error.message });
@@ -25,7 +25,7 @@ export const sendTeamRegEmail = async (req: Request, res: Response) => {
     try {
         const team = await prisma.team.findUnique({
             where: { id: teamId },
-            include: { leader: true } 
+            include: { leader: true }
         });
 
         if (!team || !team.leader) {
@@ -140,21 +140,21 @@ export const sendMemberAddedEmail = async (req: Request, res: Response) => {
         });
 
         if (!team) {
-             res.status(404).json({ error: "Team not found" });
-             return;
+            res.status(404).json({ error: "Team not found" });
+            return;
         }
         if (!member) {
-             res.status(404).json({ error: "Member (User) not found" });
-             return;
+            res.status(404).json({ error: "Member (User) not found" });
+            return;
         }
 
         await sendEmail(
             member.email,
             `You have been added to Team ${team.name}`,
             "memberAdded",
-            { 
-                memberName: member.name, 
-                teamName: team.name 
+            {
+                memberName: member.name,
+                teamName: team.name
             }
         );
 
@@ -163,5 +163,58 @@ export const sendMemberAddedEmail = async (req: Request, res: Response) => {
     } catch (error: any) {
         console.error("Error sending member mail:", error);
         res.status(500).json({ error: error.message });
+    }
+};
+
+export const sendTeamInviteEmail = async (req: Request, res: Response) => {
+    const { teamId, memberId } = req.body;
+
+    if (!teamId || !memberId) {
+        return res.status(400).json({
+            success: false,
+            error: "teamId and memberId are required",
+        });
+    }
+
+    try {
+        const [team, member] = await Promise.all([
+            prisma.team.findUnique({ where: { id: teamId } }),
+            prisma.user.findUnique({ where: { id: memberId } }),
+        ]);
+
+        if (!team) {
+            return res.status(404).json({
+                success: false,
+                error: "Team not found",
+            });
+        }
+
+        if (!member) {
+            return res.status(404).json({
+                success: false,
+                error: "Member not found",
+            });
+        }
+
+        await sendEmail(
+            member.email,
+            `Team Invitation: ${team.name}`,
+            "teamInvite",
+            {
+                memberName: member.name,
+                teamName: team.name,
+            }
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Team invitation email sent",
+        });
+    } catch (error: any) {
+        console.error("Error sending team invite email:", error);
+        return res.status(500).json({
+            success: false,
+            error: "Failed to send team invitation email",
+        });
     }
 };

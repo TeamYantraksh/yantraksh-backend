@@ -1,3 +1,115 @@
-<h2>Welcome to Tech Fest, <%= name %>!</h2>
-<p>Thank you for signing up on our website.</p>
-<p>Explore events and register your team now!</p>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Welcome to Tech Fest</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            font-family: Georgia, "Times New Roman", Times, serif;
+            color: #333;
+        }
+
+        .wrapper {
+            width: 100%;
+            padding: 40px 0;
+        }
+
+        .email-container {
+            max-width: 620px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+        }
+
+        .header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #2196f3;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+            color: #2196f3;
+            letter-spacing: 0.5px;
+        }
+
+        .content {
+            padding: 30px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .highlight-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #2196f3;
+            padding: 15px 20px;
+            margin: 20px 0;
+        }
+
+        .signature {
+            margin-top: 30px;
+        }
+
+        .footer {
+            border-top: 1px solid #ddd;
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            color: #777;
+            background-color: #fafafa;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="email-container">
+
+            <div class="header">
+                <h1>Welcome to Tech Fest</h1>
+            </div>
+
+            <div class="content">
+                <p>Dear <strong>
+                        <%= name %>
+                    </strong>,</p>
+
+                <p>
+                    We are delighted to welcome you to <strong>Tech Fest 2026</strong>.
+                    Your registration has been completed successfully.
+                </p>
+
+                <div class="highlight-box">
+                    <p>
+                        You can now explore various competitions, create or join teams,
+                        and participate in events designed to challenge and inspire you.
+                    </p>
+                </div>
+
+                <p>
+                    We encourage you to begin your journey by browsing events and
+                    registering your team at the earliest.
+                </p>
+
+                <div class="signature">
+                    <strong>Warm regards,</strong><br />
+                    Team Yantraksh<br />
+                    Tech Fest 2026
+                </div>
+            </div>
+
+            <div class="footer">
+                © 2026 Tech Fest · Yantraksh<br />
+                This is an automated email. Please do not reply.
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

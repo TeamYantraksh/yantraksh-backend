@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Team Registration Successful</title>
+    <title>Verify Your Email</title>
     <style>
         body {
             margin: 0;
@@ -51,9 +51,20 @@
             margin: 20px 0;
         }
 
-        .qr-section {
-            text-align: center;
+        .verify-button {
+            display: inline-block;
             margin: 25px 0;
+            padding: 12px 28px;
+            background-color: #2196f3;
+            color: #ffffff !important;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .verify-button:hover {
+            background-color: #1976d2;
         }
 
         .signature {
@@ -76,43 +87,38 @@
         <div class="email-container">
 
             <div class="header">
-                <h1>Team Registered Successfully</h1>
+                <h1>Email Verification</h1>
             </div>
 
             <div class="content">
                 <p>Dear <strong>
-                        <%= leaderName %>
+                        <%= name %>
                     </strong>,</p>
 
                 <p>
-                    Congratulations! Your team <strong>
-                        <%= teamName %>
-                    </strong> has been
-                    successfully registered for <strong>Tech Fest 2026</strong>.
+                    Thank you for registering with <strong>Tech Fest 2026</strong>.
+                    To complete your registration, please verify your email address.
                 </p>
 
                 <div class="highlight-box">
-                    <p><strong>Team Name:</strong>
-                        <%= teamName %>
-                    </p>
-                    <p><strong>Team ID:</strong>
-                        <%= teamId %>
+                    <p>
+                        Click the button below to confirm your email and activate your account.
                     </p>
                 </div>
 
-                <div class="qr-section">
-                    <p><strong>Entry QR Code</strong></p>
-                    <p>Please present this QR code at the event entry.</p>
-                    <img src="cid:qrImage" alt="Team QR Code" width="180" />
-                </div>
+                <p style="text-align: center;">
+                    <a href="<%= verifyUrl %>" class="verify-button">
+                        Verify Email Address
+                    </a>
+                </p>
 
-                <p>
-                    Kindly ensure that all team members are informed and carry the
-                    necessary details on the event day.
+                <p style="font-size: 13px; color: #666;">
+                    This verification link is valid for <strong>24 hours</strong>.
+                    If you did not create this account, you may safely ignore this email.
                 </p>
 
                 <div class="signature">
-                    <strong>Best wishes,</strong><br />
+                    <strong>Warm regards,</strong><br />
                     Team Yantraksh<br />
                     Tech Fest 2026
                 </div>

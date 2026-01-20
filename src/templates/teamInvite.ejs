@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Team Registration Successful</title>
+    <title>Team Invitation</title>
     <style>
         body {
             margin: 0;
@@ -44,6 +44,10 @@
             font-size: 15px;
         }
 
+        .content p {
+            margin: 0 0 16px;
+        }
+
         .highlight-box {
             background-color: #f8f9fa;
             border-left: 4px solid #2196f3;
@@ -51,13 +55,17 @@
             margin: 20px 0;
         }
 
-        .qr-section {
-            text-align: center;
-            margin: 25px 0;
+        .highlight-box strong {
+            color: #2196f3;
         }
 
         .signature {
             margin-top: 30px;
+        }
+
+        .signature strong {
+            display: block;
+            margin-bottom: 4px;
         }
 
         .footer {
@@ -68,6 +76,22 @@
             color: #777;
             background-color: #fafafa;
         }
+
+        .profile-button {
+            display: inline-block;
+            margin: 25px 0;
+            padding: 12px 28px;
+            background-color: #2196f3;
+            color: #ffffff !important;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-button:hover {
+            background-color: #1976d2;
+        }
     </style>
 </head>
 
@@ -76,43 +100,46 @@
         <div class="email-container">
 
             <div class="header">
-                <h1>Team Registered Successfully</h1>
+                <h1>Team Invitation</h1>
             </div>
 
             <div class="content">
                 <p>Dear <strong>
-                        <%= leaderName %>
+                        <%= memberName %>
                     </strong>,</p>
 
                 <p>
-                    Congratulations! Your team <strong>
+                    We are pleased to inform you that you have been invited to join the team
+                    <strong>
                         <%= teamName %>
-                    </strong> has been
-                    successfully registered for <strong>Tech Fest 2026</strong>.
+                    </strong> for <strong>Tech Fest 2026</strong>.
                 </p>
 
                 <div class="highlight-box">
                     <p><strong>Team Name:</strong>
                         <%= teamName %>
                     </p>
-                    <p><strong>Team ID:</strong>
-                        <%= teamId %>
-                    </p>
-                </div>
-
-                <div class="qr-section">
-                    <p><strong>Entry QR Code</strong></p>
-                    <p>Please present this QR code at the event entry.</p>
-                    <img src="cid:qrImage" alt="Team QR Code" width="180" />
+                    <p><strong>Event:</strong> Tech Fest 2026</p>
+                    <p><strong>Status:</strong> Invitation Pending</p>
                 </div>
 
                 <p>
-                    Kindly ensure that all team members are informed and carry the
-                    necessary details on the event day.
+                    To view your team invitation and manage your participation, please visit your profile:
                 </p>
 
+                <p style="text-align: center;">
+                    <a href="http://localhost:3000/profile" class="profile-button">
+                        Go to My Profile
+                    </a>
+                </p>
+
+                <p style="font-size: 13px; color: #666;">
+                    You may need to log in to your account to view this invitation.
+                </p>
+
+
                 <div class="signature">
-                    <strong>Best wishes,</strong><br />
+                    <strong>Warm regards,</strong>
                     Team Yantraksh<br />
                     Tech Fest 2026
                 </div>

@@ -134,7 +134,7 @@ export class TeamService {
     });
 
     if (!user) {
-      throw new AppError("User with this email not found. They must be registered first.", 404);
+      throw new AppError("User with this email not found. They must be registered first.", 422);
     }
 
     return this.addTeamMember(teamId, user.id, "PENDING");

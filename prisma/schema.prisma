@@ -47,6 +47,8 @@ model User {
   phone        String?
   year         Int?
 
+  isEmailVerified Boolean @default(false)
+
   participations Participation[]
   teamMemberships TeamMember[]
   teamLeadership  Team[] @relation("TeamLeader")

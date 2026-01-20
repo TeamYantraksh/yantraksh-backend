@@ -5,7 +5,8 @@ import {
     sendTeamRegEmail, 
     sendBuyerEmail, 
     sendAccommodationEmail, 
-    sendMemberAddedEmail
+    sendMemberAddedEmail,
+    sendTeamInviteEmail
 } from './mail.controller';
 
 const router = Router();
@@ -16,4 +17,5 @@ router.post('/send-buyer', sendBuyerEmail);
 router.post('/send-accommodation', sendAccommodationEmail);
 router.post('/broadcast-leaders', broadcastToLeaders);
 router.post('/send-member-added', sendMemberAddedEmail);
+router.post("/send-team-invite", sendTeamInviteEmail);
 export default router;

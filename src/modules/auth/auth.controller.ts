@@ -1,6 +1,9 @@
 import { Response } from "express";
 import { AuthRequest } from "../../types/request";
 import { AuthService } from "./auth.service";
+import { sendEmail } from "../mail/mail.service";
+import prisma from "../../config/client";
+import jwt from 'jsonwebtoken'
 
 const service = new AuthService();
 
@@ -45,4 +48,45 @@ export class AuthController {
         const updatedUser = await service.changeUserRole(id as string, userType);
         return res.json(updatedUser);
     }
+
+    async verifyEmail(req: AuthRequest, res: Response) {
+        const { token } = req.query;
+
+        if (!token) {
+            return res.status(400).json({ error: "Invalid verification link" });
+        }
+
+        try {
+            const decoded = jwt.verify(
+                token as string,
+                process.env.JWT_SECRET!
+            ) as any;
+
+            const user = await prisma.user.update({
+                where: { id: decoded.userId },
+                data: { isEmailVerified: true },
+            });
+
+            await sendEmail(
+                user.email,
+                "Welcome to Tech Fest!",
+                "welcome",
+                { name: user.name }
+            );
+
+            const frontendUrl = process.env.FRONTEND_URL;
+
+            if (!frontendUrl) {
+                return res.status(500).json({
+                    error: "FRONTEND_URL is not configured",
+                });
+            }
+
+            return res.redirect(`${frontendUrl}/auth/login?verified=true`);
+
+        } catch {
+            return res.status(400).json({ error: "Verification link expired or invalid" });
+        }
+    }
+
 }
