@@ -30,4 +30,33 @@ export class AuthRepository {
             data: { userType }
         });
     }
+
+    // Admin Request methods
+    createAdminRequest(userId: string) {
+        return prisma.adminRequest.create({
+            data: { userId }
+        });
+    }
+
+    findAdminRequestByUserId(userId: string) {
+        return prisma.adminRequest.findFirst({
+            where: { userId, status: 'PENDING' }
+        });
+    }
+
+    findAllPendingAdminRequests() {
+        return prisma.adminRequest.findMany({
+            where: { status: 'PENDING' },
+            include: { user: { select: { id: true, name: true, email: true, userType: true } } },
+            orderBy: { createdAt: 'desc' }
+        });
+    }
+
+    updateAdminRequest(id: string, status: 'APPROVED' | 'REJECTED') {
+        return prisma.adminRequest.update({
+            where: { id },
+            data: { status },
+            include: { user: true }
+        });
+    }
 }

@@ -58,4 +58,36 @@ export class AuthService {
         // Validate userType if needed, though Zod checks payload usually
         return this.repo.updateUserRole(userId, userType);
     }
+
+    // Admin Request methods
+    async requestAdmin(userId: string) {
+        // Check if user already has pending request
+        const existing = await this.repo.findAdminRequestByUserId(userId);
+        if (existing) {
+            throw new AppError("You already have a pending admin request", 400);
+        }
+
+        // Check if user is already an admin
+        const user = await this.repo.findById(userId);
+        if (user?.userType === "ADMIN") {
+            throw new AppError("You are already an admin", 400);
+        }
+
+        return this.repo.createAdminRequest(userId);
+    }
+
+    async getPendingAdminRequests() {
+        return this.repo.findAllPendingAdminRequests();
+    }
+
+    async approveAdminRequest(requestId: string) {
+        const request = await this.repo.updateAdminRequest(requestId, 'APPROVED');
+        // Also update the user's role to ADMIN
+        await this.repo.updateUserRole(request.userId, 'ADMIN');
+        return request;
+    }
+
+    async rejectAdminRequest(requestId: string) {
+        return this.repo.updateAdminRequest(requestId, 'REJECTED');
+    }
 }

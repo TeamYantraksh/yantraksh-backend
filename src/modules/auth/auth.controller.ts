@@ -45,4 +45,47 @@ export class AuthController {
         const updatedUser = await service.changeUserRole(id as string, userType);
         return res.json(updatedUser);
     }
+
+    // Admin Request handlers
+    async requestAdmin(req: AuthRequest, res: Response) {
+        try {
+            const request = await service.requestAdmin(req.user!.id);
+            return res.status(201).json({ success: true, data: request });
+        } catch (error: any) {
+            return res.status(error.statusCode || 500).json({ msg: error.message });
+        }
+    }
+
+    async getPendingAdminRequests(req: AuthRequest, res: Response) {
+        try {
+            const requests = await service.getPendingAdminRequests();
+            return res.json({ success: true, data: requests });
+        } catch (error: any) {
+            return res.status(500).json({ msg: error.message });
+        }
+    }
+
+    async handleAdminRequest(req: AuthRequest, res: Response) {
+        try {
+            const { id } = req.params;
+            const { action } = req.body; // 'approve' or 'reject'
+
+            if (!id || !action) {
+                return res.status(400).json({ msg: "Request ID and action are required" });
+            }
+
+            let result;
+            if (action === 'approve') {
+                result = await service.approveAdminRequest(id);
+            } else if (action === 'reject') {
+                result = await service.rejectAdminRequest(id);
+            } else {
+                return res.status(400).json({ msg: "Action must be 'approve' or 'reject'" });
+            }
+
+            return res.json({ success: true, data: result });
+        } catch (error: any) {
+            return res.status(500).json({ msg: error.message });
+        }
+    }
 }
