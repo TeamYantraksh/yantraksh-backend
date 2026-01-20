@@ -50,43 +50,45 @@ export class AuthController {
     }
 
     async verifyEmail(req: AuthRequest, res: Response) {
-        const { token } = req.query;
+        const rawToken = req.query.token;
 
-        if (!token) {
+        if (!rawToken || typeof rawToken !== "string") {
             return res.status(400).json({ error: "Invalid verification link" });
         }
 
         try {
-            const decoded = jwt.verify(
-                token as string,
-                process.env.JWT_SECRET!
-            ) as any;
+            const token = decodeURIComponent(rawToken);
 
-            const user = await prisma.user.update({
+            const decoded = jwt.verify(
+                token,
+                process.env.JWT_SECRET!,
+                { algorithms: ["HS256"] }
+            ) as {
+                userId: string;
+                type?: string;
+            };
+
+            if (decoded.type !== "email_verification") {
+                return res.status(400).json({ error: "Invalid token type" });
+            }
+
+            await prisma.user.update({
                 where: { id: decoded.userId },
                 data: { isEmailVerified: true },
             });
 
-            await sendEmail(
-                user.email,
-                "Welcome to Tech Fest!",
-                "welcome",
-                { name: user.name }
+            const frontendUrl = process.env.FRONTEND_URL; if (!frontendUrl) { return res.status(500).json({ error: "FRONTEND_URL is not configured", }); }
+            return res.redirect(
+                `${frontendUrl}/auth/login`
             );
 
-            const frontendUrl = process.env.FRONTEND_URL;
-
-            if (!frontendUrl) {
-                return res.status(500).json({
-                    error: "FRONTEND_URL is not configured",
-                });
-            }
-
-            return res.redirect(`${frontendUrl}/auth/login?verified=true`);
-
-        } catch {
-            return res.status(400).json({ error: "Verification link expired or invalid" });
+        } catch (err: any) {
+            console.error("Verify email error:", err.message);
+            return res.status(400).json({
+                error: "Verification link expired or invalid",
+            });
         }
     }
+
 
 }

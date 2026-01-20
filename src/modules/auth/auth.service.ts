@@ -8,7 +8,7 @@ import { sendEmail } from "../mail/mail.service";
 export class AuthService {
     private repo = new AuthRepository();
 
-    async register(body: any): Promise<string> {
+    async register(body: any): Promise<{ userId: string }> {
         const data = body;
 
         if (data.userType === "AUS_STUDENT" && !data.rollNumber) {
@@ -21,21 +21,21 @@ export class AuthService {
         data.password = await bcrypt.hash(data.password, 10)
 
         const user = await this.repo.createUser(data);
-        const verifyToken = jwt.sign(
-            { userId: user.id },
-            process.env.JWT_SECRET!,
-            { expiresIn: "24h" }
-        );
-        await sendEmail(
-            user.email,
-            "Verify your email address",
-            "verify",
-            {
-                name: user.name,
-                verifyUrl: `${process.env.API_URL}/auth/verify-email?token=${verifyToken}`,
-            }
-        );
-        return this.generateToken(user.id, user.userType);
+        // const verifyToken = jwt.sign(
+        //     { userId: user.id },
+        //     process.env.JWT_SECRET!,
+        //     { expiresIn: "24h" }
+        // );
+        // await sendEmail(
+        //     user.email,
+        //     "Verify your email address",
+        //     "verify",
+        //     {
+        //         name: user.name,
+        //         verifyUrl: `${process.env.API_URL}/auth/verify-email?token=${verifyToken}`,
+        //     }
+        // );
+        return { userId: user.id };
     }
 
     async login(body: any): Promise<string> {
