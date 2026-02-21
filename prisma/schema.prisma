@@ -67,6 +67,7 @@ model Competition {
   type        CompetitionType
   image       String
   specs       String[]
+  needReg     Boolean         @default(false)
 
   participations Participation[]
   teams          Team[]

@@ -16,6 +16,7 @@ export const createCompetitionSchema = z.object({
     type: competitionTypeSchema,
     image: z.string().url().or(z.string()), // Accept URL or string path
     specs: z.array(z.string()),
+    needReg: z.boolean().default(false),
   }),
 });
 
@@ -27,6 +28,7 @@ export const updateCompetitionSchema = z.object({
     type: competitionTypeSchema.optional(),
     image: z.string().optional(),
     specs: z.array(z.string()).optional(),
+    needReg: z.boolean().optional(),
   }),
 });
 

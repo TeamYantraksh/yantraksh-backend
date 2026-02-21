@@ -8,6 +8,7 @@ type CompetitionCreateData = {
   type: "SOLO" | "TEAM";
   image: string;
   specs: string[];
+  needReg?: boolean;
 };
 
 type CompetitionUpdateData = Partial<CompetitionCreateData>;
